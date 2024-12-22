@@ -144,6 +144,12 @@ class HomeScreen extends StatelessWidget {
               },
               child: const Text('Chat with Support'),
             ),
+            ElevatedButton(
+              onPressed: () {
+                Get.toNamed('/liveness_camera');
+              },
+              child: const Text('Camera'),
+            ),
           ],
         ),
       ),

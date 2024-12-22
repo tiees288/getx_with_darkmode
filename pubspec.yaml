@@ -31,6 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   get: ^4.3.8
+  camera: ^0.11.0+2
   socket_io_client: ^3.0.2
 
   # The following adds the Cupertino Icons font to your application.
@@ -47,6 +48,10 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+
+dependency_overrides:
+  # camera: 0.11.0
+  # camera_android_camerax: 0.6.7
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
