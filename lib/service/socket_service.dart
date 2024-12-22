@@ -15,17 +15,21 @@ class SocketService extends GetxService {
   void onClose() {
     super.onClose();
     socket.disconnect();
+    socket.destroy();
   }
 
   // Listen to the socket
   void listenToSocket(String eventName, Function(String) callback) {
+    // Listen to event name and acked
     socket.on(eventName, (data) {
       callback(data);
     });
   }
 
   void broadcastToSocket(String eventName, List<dynamic> args) {
-    socket.emit(eventName, args);
+    socket.emitWithAck(eventName, args, ack: (data) {
+      debugPrint('ack from server $data');
+    });
   }
 
   Future<SocketService> _initIO() async {

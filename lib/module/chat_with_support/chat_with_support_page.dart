@@ -22,42 +22,46 @@ class ChatWithSupportPage extends StatelessWidget {
                   color: Colors.grey[300],
                 ),
                 child: Obx(
-                  () => Scrollbar(
-                    child: ListView.builder(
-                        physics: const BouncingScrollPhysics(),
-                        controller: controller.scrollController,
-                        shrinkWrap: true,
-                        itemCount: controller.messages.length,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            padding: const EdgeInsets.all(15),
-                            width: double.infinity,
-                            child: Row(
-                              mainAxisAlignment:
-                                  controller.messages[index].sender == 'support'
-                                      ? MainAxisAlignment.start
-                                      : MainAxisAlignment.end,
-                              children: [
-                                Container(
-                                    constraints: const BoxConstraints(
-                                      minWidth: 50,
-                                      maxWidth: 200,
-                                    ),
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      color:
-                                          controller.messages[index].sender ==
-                                                  'support'
-                                              ? Colors.white
-                                              : Colors.green,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Text(
-                                        controller.messages[index].message)),
-                              ],
-                            ),
-                          );
-                        }),
+                  () => SizeChangedLayoutNotifier(
+                    child: Scrollbar(
+                      controller: controller.scrollController,
+                      child: ListView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          controller: controller.scrollController,
+                          shrinkWrap: true,
+                          itemCount: controller.messages.length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              padding: const EdgeInsets.all(15),
+                              width: double.infinity,
+                              child: Row(
+                                mainAxisAlignment:
+                                    controller.messages[index].sender ==
+                                            'support'
+                                        ? MainAxisAlignment.start
+                                        : MainAxisAlignment.end,
+                                children: [
+                                  Container(
+                                      constraints: const BoxConstraints(
+                                        minWidth: 50,
+                                        maxWidth: 200,
+                                      ),
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        color:
+                                            controller.messages[index].sender ==
+                                                    'support'
+                                                ? Colors.white
+                                                : Colors.green,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Text(
+                                          controller.messages[index].message)),
+                                ],
+                              ),
+                            );
+                          }),
+                    ),
                   ),
                 ),
               ),

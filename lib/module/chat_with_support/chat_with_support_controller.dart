@@ -18,11 +18,22 @@ class ChatWithSupportController extends GetxController {
   final chatTextEditingController = TextEditingController();
   final ScrollController scrollController = ScrollController();
   @override
-  void onReady() {
+  void onReady() async {
     super.onReady();
 
     socketService.listenToSocket('chat message', (data) {
       messages.add(ChatMessageModel(message: data, sender: 'support'));
+    });
+
+    await Future.delayed(const Duration(milliseconds: 500), () {
+      for (int i = 0; i < 300; i++) {
+        messages.add(ChatMessageModel(
+            message: 'Hello, How can I help you?', sender: 'support'));
+      }
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
     });
   }
 
