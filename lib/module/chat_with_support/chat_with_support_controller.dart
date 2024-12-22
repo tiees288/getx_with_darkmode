@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:getx_with_darkmode/service/socket_service.dart';
+import 'package:getx_flutter_ui/service/socket_service.dart';
 
 class ChatMessageModel {
   final String message;

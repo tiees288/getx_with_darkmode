@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:getx_with_darkmode/module/chat_with_support/chat_with_support_binding.dart';
-import 'package:getx_with_darkmode/module/chat_with_support/chat_with_support_page.dart';
-import 'package:getx_with_darkmode/service/socket_service.dart';
+import 'package:getx_flutter_ui/module/chat_with_support/chat_with_support_binding.dart';
+import 'package:getx_flutter_ui/module/chat_with_support/chat_with_support_page.dart';
+import 'package:getx_flutter_ui/module/liveness_camera/liveness_camera_binding.dart';
+import 'package:getx_flutter_ui/module/liveness_camera/liveness_camera_page.dart';
+import 'package:getx_flutter_ui/service/socket_service.dart';
 
 // Controller for managing theme mode
 class ThemeController extends GetxController {
@@ -44,6 +46,12 @@ class MyApp extends StatelessWidget {
             page: () => ChatWithSupportPage(),
             transition: Transition.native,
             binding: ChatWithSupportBinding(),
+          ),
+          GetPage(
+            name: '/liveness_camera',
+            binding: LivenessCameraBinding(),
+            page: () => LivenessCameraPage(),
+            transition: Transition.native,
           ),
         ],
         darkTheme: darkTheme,
