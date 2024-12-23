@@ -35,6 +35,37 @@ class _LivenessCameraPageState extends State<LivenessCameraPage>
                       _controller.cameraController,
                     ),
                     _buildFaceOverlay(),
+                    Positioned(
+                      top: 10,
+                      left: MediaQuery.of(context).size.width / 2 - 75,
+                      child: (_controller.isFaceInFrame.value)
+                          ? const Text(
+                              'Face Detected',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontSize: 20,
+                              ),
+                            )
+                          : const Text(
+                              'Face Not Detected',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 20,
+                              ),
+                            ),
+                    ),
+                    Positioned(
+                      top: 30,
+                      left: MediaQuery.of(context).size.width / 2 - 75,
+                      child: (!_controller.isBlinkEye.value)
+                          ? const Text('Please blink your eyes')
+                          : (!_controller.isSmile.value &&
+                                  _controller.isBlinkEye.value)
+                              ? const Text('Please smile')
+                              : const SizedBox(),
+                    ),
                   ],
                 )
               : const Center(

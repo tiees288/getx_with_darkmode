@@ -8,6 +8,12 @@ import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 class LivenessCameraController extends GetxController {
   final RxBool isCameraReady = false.obs;
   final RxBool isProcessing = false.obs;
+
+  // Variable check state complete
+  final RxBool isFaceInFrame = false.obs;
+  final RxBool isBlinkEye = false.obs;
+  final RxBool isSmile = false.obs;
+
   final RxList<CameraDescription> cameras = <CameraDescription>[].obs;
   late CameraController cameraController;
   final _orientations = {
@@ -61,35 +67,54 @@ class LivenessCameraController extends GetxController {
 
   void subScribeToCamera() {
     cameraController.startImageStream((image) async {
-      if (isProcessing.value) return;
-      isProcessing.value = true;
-      // Do something with the image
-      final inputImage = _inputImageFromCameraImage(image);
-      if (inputImage == null) {
-        isProcessing.value = false;
-        return;
+      _processImage(image);
+      if (isFaceInFrame.value && isBlinkEye.value && isSmile.value) {
+        cameraController.stopImageStream();
+        Get.back();
       }
-      final faces = await faceDetector.processImage(inputImage);
-      for (Face face in faces) {
-        final leftEye = face.leftEyeOpenProbability;
-        final rightEye = face.rightEyeOpenProbability;
-        final smile = face.smilingProbability;
-
-        final bool isBlinkEye = leftEye != null &&
-            rightEye != null &&
-            leftEye < 0.5 &&
-            rightEye < 0.5;
-        final bool isSmile = smile != null && smile > 0.5;
-
-        if (isBlinkEye) {
-          print('Blink Eye');
-        }
-        if (isSmile) {
-          print('Smile');
-        }
-      }
-      isProcessing.value = false;
     });
+  }
+
+  void _processImage(CameraImage image) async {
+    if (isProcessing.value) return;
+    isProcessing.value = true;
+    // Do something with the image
+    final inputImage = _inputImageFromCameraImage(image);
+    if (inputImage == null) {
+      isProcessing.value = false;
+      return;
+    }
+    final faces = await faceDetector.processImage(inputImage);
+    for (Face face in faces) {
+      final leftEye = face.leftEyeOpenProbability;
+      final rightEye = face.rightEyeOpenProbability;
+      final smile = face.smilingProbability;
+
+      final bool isBlinkDetectEye = leftEye != null &&
+          rightEye != null &&
+          leftEye < 0.5 &&
+          rightEye < 0.5;
+      final bool isDetectSmile = smile != null && smile > 0.5;
+
+      final boundary = face.boundingBox;
+
+      // Check is face boundary is in a draw frame
+      if (!(boundary.left < -75 ||
+          boundary.left > 75 ||
+          boundary.top < -50 ||
+          boundary.top > 350)) {
+        isFaceInFrame.value = true;
+        if (isBlinkDetectEye) {
+          isBlinkEye.value = true;
+        }
+        if (isDetectSmile) {
+          isSmile.value = true;
+        }
+      } else {
+        isFaceInFrame.value = false;
+      }
+    }
+    isProcessing.value = false;
   }
 
   InputImage? _inputImageFromCameraImage(CameraImage image) {
