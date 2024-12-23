@@ -68,6 +68,9 @@ class FacePainter extends CustomPainter {
 
     path.quadraticBezierTo(size.width * 0.5, -50, size.width * 0.9, 200);
     path.lineTo(size.width * 0.9, size.height * 0.5);
+    path.quadraticBezierTo(size.width * 0.5, size.height * 0.9,
+        size.width * 0.1, size.height * 0.5);
+    path.lineTo(size.width * 0.1, 200);
 
     canvas.drawPath(path, paint);
   }

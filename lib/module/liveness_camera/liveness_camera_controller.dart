@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -21,6 +20,9 @@ class LivenessCameraController extends GetxController {
   final options = FaceDetectorOptions(
     enableContours: true,
     enableLandmarks: true,
+    enableClassification: true,
+    enableTracking: true,
+    performanceMode: FaceDetectorMode.accurate,
   );
   late FaceDetector faceDetector = FaceDetector(options: options);
 
@@ -67,19 +69,23 @@ class LivenessCameraController extends GetxController {
         isProcessing.value = false;
         return;
       }
-      debugPrint('Processing image $inputImage');
       final faces = await faceDetector.processImage(inputImage);
-
       for (Face face in faces) {
-        final lEyes = face.leftEyeOpenProbability;
-        final rEyes = face.rightEyeOpenProbability;
+        final leftEye = face.leftEyeOpenProbability;
+        final rightEye = face.rightEyeOpenProbability;
+        final smile = face.smilingProbability;
 
-        if (lEyes != null && rEyes != null) {
-          if (lEyes < 0.1 || rEyes < 0.1) {
-            debugPrint('Eyes are closed');
-          } else {
-            debugPrint('Eyes are open');
-          }
+        final bool isBlinkEye = leftEye != null &&
+            rightEye != null &&
+            leftEye < 0.5 &&
+            rightEye < 0.5;
+        final bool isSmile = smile != null && smile > 0.5;
+
+        if (isBlinkEye) {
+          print('Blink Eye');
+        }
+        if (isSmile) {
+          print('Smile');
         }
       }
       isProcessing.value = false;
