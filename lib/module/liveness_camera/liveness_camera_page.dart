@@ -29,12 +29,51 @@ class _LivenessCameraPageState extends State<LivenessCameraPage>
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: Obx(() => _controller.isCameraReady.value
-              ? CameraPreview(
-                  _controller.cameraController,
+              ? Stack(
+                  children: [
+                    CameraPreview(
+                      _controller.cameraController,
+                    ),
+                    _buildFaceOverlay(),
+                  ],
                 )
               : const Center(
                   child: CircularProgressIndicator(),
                 ))),
     );
+  }
+
+  _buildFaceOverlay() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      child: CustomPaint(
+        painter: FacePainter(),
+      ),
+    );
+  }
+}
+
+class FacePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    // Draw a face Shape on the screen
+    final paint = Paint()
+      ..color = Colors.blue
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4.0;
+    final path = Path();
+    // จุดเริ่มต้น (บนสุดตรงกลาง)
+    path.moveTo(size.width * 0.10, 200);
+
+    path.quadraticBezierTo(size.width * 0.5, -50, size.width * 0.9, 200);
+    path.lineTo(size.width * 0.9, size.height * 0.5);
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return false;
   }
 }
