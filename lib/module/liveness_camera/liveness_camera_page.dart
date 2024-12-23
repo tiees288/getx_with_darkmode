@@ -18,7 +18,7 @@ class _LivenessCameraPageState extends State<LivenessCameraPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const SizedBox(),
+        // leading: const SizedBox(),
         centerTitle: true,
         title: const Text('Please blink your eyes'),
       ),
