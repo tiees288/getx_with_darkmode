@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -43,7 +44,9 @@ class LivenessCameraController extends GetxController {
         frontCam,
         ResolutionPreset.high,
         enableAudio: false,
-        imageFormatGroup: Platform.isAndroid ? ImageFormatGroup.nv21 : null,
+        imageFormatGroup: Platform.isAndroid
+            ? ImageFormatGroup.nv21
+            : ImageFormatGroup.bgra8888,
       );
     }
     faceDetector = FaceDetector(options: options);
@@ -80,11 +83,13 @@ class LivenessCameraController extends GetxController {
     isProcessing.value = true;
     // Do something with the image
     final inputImage = _inputImageFromCameraImage(image);
+
     if (inputImage == null) {
       isProcessing.value = false;
       return;
     }
     final faces = await faceDetector.processImage(inputImage);
+    debugPrint('faces: ${faces.length}');
     for (Face face in faces) {
       final leftEye = face.leftEyeOpenProbability;
       final rightEye = face.rightEyeOpenProbability;
@@ -154,6 +159,7 @@ class LivenessCameraController extends GetxController {
 
     // get image format
     final format = InputImageFormatValue.fromRawValue(image.format.raw);
+    debugPrint('FaceDetector: format: $format');
     // validate format depending on platform
     // only supported formats:
     // * nv21 for Android
@@ -163,9 +169,13 @@ class LivenessCameraController extends GetxController {
         (Platform.isIOS && format != InputImageFormat.bgra8888)) return null;
 
     // since format is constraint to nv21 or bgra8888, both only have one plane
-    if (image.planes.length != 1) return null;
+    debugPrint('plane: ${image.planes.length}');
+    // if (image.planes.length != 1) return null;
     final plane = image.planes.first;
-
+    // final WriteBuffer allBytes = WriteBuffer();
+    // for (final Plane plane in image.planes) {
+    //   allBytes.putUint8List(plane.bytes);
+    // }
     // compose InputImage using bytes
     return InputImage.fromBytes(
       bytes: plane.bytes,
